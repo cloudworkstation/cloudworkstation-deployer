@@ -1,0 +1,72 @@
+[
+  {
+    "name": "proxy",
+    "image": "cloudworkstation/oidc-rproxy",
+    "cpu": 256,
+    "memory": 512,
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80,
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+          "awslogs-group": "/ecs/${cluster}/${service}",
+          "awslogs-region": "${region}",
+          "awslogs-stream-prefix": "oidc"
+      }
+    },
+    "environment": [
+      { "name": "OIDC_PROVIDER_METADATA_URL",
+        "value": "${metadata_url}" },
+      { "name": "OIDC_PROVIDER_JWKS_URI",
+        "value": "${jwks_uri}" },
+      { "name": "OIDC_CLIENT_ID",
+        "value": "${client_id}" },
+      { "name": "DOMAIN",
+        "value": "${domain}" },
+      { "name": "UPSTREAM",
+        "value": "localhost:8080/" },
+      { "name": "PORT",
+        "value": "443" },
+      { "name": "SCHEME",
+        "value": "https" }
+    ],
+    "secrets": [
+      { "name": "OIDC_CLIENT_SECRET",
+        "valueFrom": "${client_secret_ssm_name}" },
+      { "name": "OIDC_CRYPTO_PASSPRHASE",
+        "valueFrom": "${crypto_passphrase_ssm_name}" }
+    ]
+  },
+  {
+    "name": "haproxy",
+    "image": "cloudworkstation/haproxy-per-path",
+    "cpu": 256,
+    "memory": 512,
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "hostPort": 8080,
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+          "awslogs-group": "/ecs/${cluster}/${service}",
+          "awslogs-region": "${region}",
+          "awslogs-stream-prefix": "haproxy"
+      }
+    },
+    "environment": [
+      { "name": "PATHS",
+        "value": "${replace(jsonencode(routing_config), "\"", "\\\"")}" }
+    ]
+  }
+]

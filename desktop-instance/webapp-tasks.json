@@ -1,0 +1,49 @@
+[
+  {
+    "name": "vncproxy",
+    "image": "cloudworkstation/vnc-proxy",
+    "cpu": 256,
+    "memory": 512,
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "hostPort": 8080,
+        "protocol": "tcp"
+      }
+    ],
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+          "awslogs-group": "/ecs/${cluster}/${service}",
+          "awslogs-region": "${region}",
+          "awslogs-stream-prefix": "vnc-proxy"
+      }
+    },
+    "environment": [
+      { "name": "HOST",
+        "value": "${desktop_host}" },
+      { "name": "PORT",
+        "value": "5901" },
+      { "name": "PASSWORD",
+        "value": "${vnc_password}" },
+      { "name": "GUACD_HOST",
+        "value": "localhost" }
+    ]
+  },
+  {
+    "name": "guacd",
+    "image": "guacamole/guacd",
+    "cpu": 256,
+    "memory": 512,
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+          "awslogs-group": "/ecs/${cluster}/${service}",
+          "awslogs-region": "${region}",
+          "awslogs-stream-prefix": "guacd"
+      }
+    }
+  }
+]

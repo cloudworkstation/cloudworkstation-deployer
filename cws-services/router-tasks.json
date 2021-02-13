@@ -1,0 +1,40 @@
+[
+  {
+    "name": "router",
+    "image": "richardjkendall/haproxy:develop",
+    "cpu": 256,
+    "memory": 512,
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80,
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+          "awslogs-group": "/ecs/${cluster}/${service}",
+          "awslogs-region": "${region}",
+          "awslogs-stream-prefix": "router"
+      }
+    },
+    "environment": [
+      { "name": "NAMESPACE_MAP",
+        "value": "${replace(jsonencode(namespaces), "\"", "\\\"")}" },
+      { "name": "AWS_REGION",
+        "value": "${region}" },
+      { "name": "APPLY_MODE",
+        "value": "on" },
+      { "name": "REFRESH_RATE",
+        "value": "60" },
+      { "name": "PROM_PASSWD",
+        "value": "${prom_passwd}" },
+      { "name": "STATS_PASSWD",
+        "value": "${stats_passwd}" },
+      { "name": "DEFAULT_DOMAIN",
+        "value": "${notfoundurl}" }
+    ]
+  }
+]
