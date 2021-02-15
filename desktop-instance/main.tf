@@ -7,7 +7,7 @@ module "allow_vnc" {
 }
 
 module "instance" {
-  source = "../../terraform/modules/ec2-instance"
+  source = "../modules/ec2-instance"
 
   aws_region = var.aws_region
   desktop_id = var.desktop_id
