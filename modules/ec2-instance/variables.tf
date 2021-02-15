@@ -42,7 +42,7 @@ variable "username" {
 
 variable "user_data" {
   type = string
-  description = "Script to run on instance creation"
+  description = "Script to run on instance creation, should be base64 encoded"
 }
 
 variable "root_volume_size" {

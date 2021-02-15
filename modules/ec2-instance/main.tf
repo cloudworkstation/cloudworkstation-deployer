@@ -44,16 +44,7 @@ resource "aws_instance" "desktop" {
     volume_size = var.root_volume_size
   }
 
-  /*
-  root_block_device = [
-    {
-      volume_type = "gp2"
-      volume_size = 10
-    },
-  ]
-  */
-
-  user_data_base64 = base64encode(var.user_data)
+  user_data_base64 = var.user_data
 
   iam_instance_profile = aws_iam_instance_profile.instance_profile.name
 
