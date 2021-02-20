@@ -35,6 +35,11 @@ variable "screen_geometry" {
   default = "1920x1080"
 }
 
+variable "machinedefcode" {
+  type = string
+  description = "Machine definition used to create the instance"
+}
+
 variable "username" {
   type = string
   description = "What is the username of the user for the desktop"

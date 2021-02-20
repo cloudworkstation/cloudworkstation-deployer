@@ -53,6 +53,8 @@ resource "aws_instance" "desktop" {
     VncPassword    = random_string.random_secret.result
     ScreenGeometry = var.screen_geometry
     Username       = var.username
+    MachineDef     = var.machinedefcode
+    MachineType    = "Desktop"
   }
 }
 
