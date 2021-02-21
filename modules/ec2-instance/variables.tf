@@ -38,7 +38,7 @@ variable "screen_geometry" {
 variable "machinedefcode" {
   type = string
   description = "Machine definition used to create the instance"
-}
+} 
 
 variable "username" {
   type = string
