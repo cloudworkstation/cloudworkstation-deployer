@@ -50,6 +50,7 @@ resource "aws_instance" "desktop" {
 
   tags = {
     Name           = "desktop-${var.desktop_id}"
+    DesktopId      = var.desktop_id
     VncPassword    = random_string.random_secret.result
     ScreenGeometry = var.screen_geometry
     Username       = var.username
