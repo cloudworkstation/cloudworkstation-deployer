@@ -40,6 +40,11 @@ variable "instance_type" {
   default = "t3.medium"
 }
 
+variable "machinedefcode" {
+  type = string
+  description = "Machine definition used to create the instance"
+}
+
 variable "screen_geometry" {
   type = string
   description = "What display resolution should be used, defaults to 1920x1080"
