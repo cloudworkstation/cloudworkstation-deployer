@@ -63,6 +63,10 @@ locals {
         value = "TBC"
       },
       {
+        name  = "INSTANCE_TYPE"
+        value = "TBC"
+      },
+      {
         name  = "SCREEN_GEOMETRY"
         value = "TBC"
       },
@@ -213,5 +217,22 @@ data "aws_iam_policy_document" "instance_manager_policy" {
       module.state_bucket.s3_bucket_arn,
       "${module.state_bucket.s3_bucket_arn}/*"
     ]
+  }
+}
+
+resource "aws_security_group" "allow_egress_to_world" {
+  name_prefix = "ecs-egress"
+  description = "Allow outbound to world"
+  vpc_id      = var.vpc_id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "securitygroup_for_instance_mgr"
   }
 }
