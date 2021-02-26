@@ -83,3 +83,9 @@ variable "oidc_crypto_passphrase_ssm_name" {
   type = string
   description = "Name of SSM SecureString parameter which contains the passphrase used to encrypt session tokens"
 }
+
+variable "instance_mgr_version" {
+  type = string
+  description = "What version of instance manager should we use, defaults to v0.05"
+  default = "v0.05"
+}

@@ -43,6 +43,11 @@ variable "services_registry_namespace" {
   description = "ID of the CloudMap namespace used to register service tasks."
 }
 
+variable "desktops_registry_namespace" {
+  type = string
+  description = "ID of the CloudMap namespace used to register desktop tasks."
+}
+
 variable "alb_listener_arn" {
   type = string
   description = "ARN of ALB listener to attach to, only needed when using an ALB"
@@ -61,6 +66,11 @@ variable "alb_security_group" {
 variable "task_subnets" {
   type = list(string)
   description = "List of subnets in which to launch tasks"
+}
+
+variable "instance_subnets" {
+  type = list(string)
+  description = "List of subnets in which to launch instances"
 }
 
 variable "oidc_metadata_url" {
@@ -86,4 +96,9 @@ variable "oidc_client_secret_ssm_name" {
 variable "oidc_crypto_passphrase_ssm_name" {
   type = string
   description = "Name of SSM SecureString parameter which contains the passphrase used to encrypt session tokens"
+}
+
+variable "instance_mgr_version" {
+  type = string
+  description = "Version of the instance manager to use"
 }

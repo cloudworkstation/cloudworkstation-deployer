@@ -87,11 +87,8 @@ data "aws_iam_policy_document" "cloudmap_policy" {
     effect = "Allow"
 
     actions = [
-      //"servicediscovery:DeregisterInstance",
       "servicediscovery:Get*",
       "servicediscovery:List*"
-      //"servicediscovery:RegisterInstance",
-      //"servicediscovery:UpdateInstanceCustomHealthStatus"
     ]
 
     resources = ["*"]
@@ -149,4 +146,18 @@ module "router" {
       }
     ]
   })
+}
+
+module "api_deps" {
+  source = "../api-deps"
+
+  aws_region   = var.aws_region
+  vpc_id       = var.vpc_id
+  cluster_name = var.cluster_name
+
+  task_subnets                = var.task_subnets
+  instance_subnets            = var.instance_subnets
+  desktops_registry_namespace = var.desktops_registry_namespace
+  security_group_id           = module.allow_p8080.group_id
+  instance_mgr_version        = var.instance_mgr_version
 }
