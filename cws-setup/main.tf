@@ -23,9 +23,11 @@ module "services" {
   vpc_id           = var.vpc_id
   cluster_name     = var.cluster_name
   namespace_suffix = var.namespace_suffix
+  table_name       = var.table_name
 
   number_of_oidc_instances   = var.number_of_oidc_instances
   number_of_router_instances = var.number_of_router_instances
+  number_of_api_instances    = var.number_of_api_instances
 
   use_spot_capacity = var.use_spot_capacity
 

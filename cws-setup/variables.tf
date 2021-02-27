@@ -53,6 +53,12 @@ variable "number_of_router_instances" {
   default = 2
 }
 
+variable "number_of_api_instances" {
+  type = number
+  description = "Number of api instances which should run, defaults to 2."
+  default = 2
+}
+
 variable "use_spot_capacity" {
   type = bool
   description = "Should spot capacity be used to create Fargate tasks.  Defaults to 'false'"
@@ -88,4 +94,10 @@ variable "instance_mgr_version" {
   type = string
   description = "What version of instance manager should we use, defaults to v0.05"
   default = "v0.05"
+}
+
+variable "table_name" {
+  type = string
+  description = "Name of the DyanamoDB table to create to store application data, defaults to 'desktops_data'"
+  default = "desktops_data"
 }
