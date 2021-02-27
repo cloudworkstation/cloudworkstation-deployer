@@ -2,7 +2,7 @@ locals {
   path_routing_config = [
     {
       name   = "api_route"
-      number = "5"
+      number = var.number_of_api_instances
       path   = "api"
       dns    = "_api._tcp.services.${var.namespace_suffix}"
     },
@@ -20,6 +20,8 @@ locals {
     }
   ]
 }
+
+data "aws_caller_identity" "current" {}
 
 module "allow_p80" {
   source = "../modules/reflexive-sec-group"
@@ -56,7 +58,8 @@ module "oidc" {
   task_subnets            = var.task_subnets
 
   security_groups = [
-    module.allow_p80.group_id
+    module.allow_p80.group_id,
+    module.allow_p5000.group_id
   ]  
 
   tasks_def = templatefile("${path.module}/oidc-tasks.json", {
@@ -79,6 +82,14 @@ module "allow_p8080" {
   aws_region = var.aws_region
   vpc_id     = var.vpc_id
   port_num   = 8080
+}
+
+module "allow_p5000" {
+  source = "../modules/reflexive-sec-group"
+
+  aws_region = var.aws_region
+  vpc_id     = var.vpc_id
+  port_num   = 5000
 }
 
 data "aws_iam_policy_document" "cloudmap_policy" {
@@ -145,6 +156,103 @@ module "router" {
         mode       = "path"
       }
     ]
+  })
+}
+
+module "db" {
+  source = "../modules/dynamo-db-table"
+
+  table_name = var.table_name
+  hash_key   = "domain"
+  sort_key   = "sub_id"
+}
+
+data "aws_iam_policy_document" "api_policy" {
+  statement {
+    sid    = "1"
+    effect = "Allow"
+
+    actions = [
+      "ec2:DescribeInstances",
+      "ec2:StartInstances",
+      "ec2:StopInstances"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "2"
+    effect = "Allow"
+
+    actions = [
+      "ecs:RunTask"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "3"
+    effect = "Allow"
+
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:Scan",
+      "dynamodb:Query"
+    ]
+
+    resources = [
+      "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/${var.table_name}"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "api_policy" {
+  policy = data.aws_iam_policy_document.api_policy.json
+}
+
+module "api" {
+  source = "../modules/ecs-service"
+
+  aws_region   = var.aws_region
+  vpc_id       = var.vpc_id
+  cluster_name = var.cluster_name
+  service_name = "${var.cluster_name}-api"
+  cpu          = 256
+  memory       = 512
+
+  use_spot_capacity = var.use_spot_capacity
+
+  task_name           = "api"
+  number_of_instances = var.number_of_api_instances
+
+  attach_to_alb                 = false
+  container_to_expose           = "api"
+  container_port_to_expose      = 5000
+  service_registry_id           = var.services_registry_namespace
+  service_registry_service_name = "api"
+
+  task_subnets = var.task_subnets
+
+  security_groups = [
+    module.allow_p5000.group_id
+  ]
+
+  task_role_policies = [
+    aws_iam_policy.api_policy.arn
+  ]
+
+  tasks_def = templatefile("${path.module}/api-tasks.json", {
+    region       = var.aws_region
+    cluster      = var.cluster_name
+    service      = "${var.cluster_name}-api"
+    table_name   = var.table_name
+    task_arn     = module.api_deps.task_name_and_revision
+    sec_group    = module.api_deps.security_group_id
+    subnets      = join(",", var.task_subnets)
   })
 }
 

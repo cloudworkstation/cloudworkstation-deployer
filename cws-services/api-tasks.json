@@ -1,0 +1,36 @@
+[
+  {
+    "name": "api",
+    "image": "cloudworkstation/api-server:latest",
+    "cpu": 256,
+    "memory": 512,
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 5000,
+        "hostPort": 5000,
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+          "awslogs-group": "/ecs/${cluster}/${service}",
+          "awslogs-region": "${region}",
+          "awslogs-stream-prefix": "api-server"
+      }
+    },
+    "environment": [
+      { "name": "TABLE_NAME",
+        "value": "${table_name}" },
+      { "name": "CLUSTER_NAME",
+        "value": "${cluster}" },
+      { "name": "TASK_ARN",
+        "value": "${task_arn}" },
+      { "name": "SECURITY_GROUP",
+        "value": "${sec_group}" },
+      { "name": "SUBNETS",
+        "value": "${subnets}" }
+    ]
+  }
+]
