@@ -153,8 +153,16 @@ data "aws_iam_policy_document" "instance_manager_policy" {
     effect = "Allow"
     actions = [
       "ec2:RunInstances",
-      "ec2:CreateSecurityGroup"
+      "ec2:TerminateInstances",
+      "ec2:CreateSecurityGroup",
+      "ec2:DeleteSecurityGroup",
+      "ec2:CreateTags",
+      "ec2:*SecurityGroupEgress",
+      "ec2:*SecurityGroupIngress",
+      "ec2:MonitorInstances",
+      "ec2:Describe*"
     ]
+    resources = [ "*" ]
   }
 
   statement {
@@ -162,6 +170,7 @@ data "aws_iam_policy_document" "instance_manager_policy" {
     effect = "Allow"
     actions = [
       "iam:CreateRole",
+      "iam:CreatePolicy",
       "iam:PutRolePolicy",
       "iam:CreateInstanceProfile",
       "iam:AddRoleToInstanceProfile",
@@ -170,8 +179,19 @@ data "aws_iam_policy_document" "instance_manager_policy" {
       "iam:GetInstanceProfile",
       "iam:GetPolicyVersion",
       "iam:AttachRolePolicy",
-      "iam:PassRole"
+      "iam:PassRole",
+      "iam:GetRole",
+      "iam:ListRolePolicies",
+      "iam:ListAttachedRolePolicies",
+      "iam:DetachRolePolicy",
+      "iam:ListInstanceProfilesForRole",
+      "iam:RemoveRoleFromInstanceProfile",
+      "iam:DeleteRole",
+      "iam:ListPolicyVersions",
+      "iam:DeletePolicy",
+      "iam:DeleteInstanceProfile"
     ]
+    resources = [ "*" ]
   }
 
   statement {
@@ -183,7 +203,8 @@ data "aws_iam_policy_document" "instance_manager_policy" {
       "ecs:DeregisterTaskDefinition",
       "ecs:CreateService",
       "ecs:UpdateService",
-      "ecs:DeleteService"
+      "ecs:DeleteService",
+      "ecs:Describe*"
     ]
     resources = [ "*" ]
   }
@@ -195,7 +216,10 @@ data "aws_iam_policy_document" "instance_manager_policy" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
-      "logs:DescribeLogStreams"
+      "logs:DescribeLogStreams",
+      "logs:DescribeLogGroups",
+      "logs:ListTagsLogGroup",
+      "logs:DeleteLogGroup"
     ]
     resources = [ "*" ]
   }
@@ -204,7 +228,10 @@ data "aws_iam_policy_document" "instance_manager_policy" {
     sid    = "5"
     effect = "Allow"
     actions = [
-      "servicediscovery:CreateService"
+      "servicediscovery:CreateService",
+      "servicediscovery:GetService",
+      "servicediscovery:ListTagsForResource",
+      "servicediscovery:DeleteService"
     ]
     resources = [ "*" ]
   }
@@ -235,4 +262,13 @@ resource "aws_security_group" "allow_egress_to_world" {
   tags = {
     Name = "securitygroup_for_instance_mgr"
   }
+}
+
+resource "aws_iam_policy" "instance_manager_policy" {
+  policy = data.aws_iam_policy_document.instance_manager_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "task_role_policy_attach" {
+  role       = aws_iam_role.task_role.name
+  policy_arn = aws_iam_policy.instance_manager_policy.arn
 }
