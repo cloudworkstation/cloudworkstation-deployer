@@ -73,6 +73,7 @@ module "oidc" {
     client_secret_ssm_name      = var.oidc_client_secret_ssm_name
     crypto_passphrase_ssm_name  = var.oidc_crypto_passphrase_ssm_name
     routing_config              = local.path_routing_config
+    oidc_ru                     = var.oidc_remote_user_claim
   })
 }
 
@@ -253,6 +254,7 @@ module "api" {
     task_arn     = module.api_deps.task_name_and_revision
     sec_group    = module.api_deps.security_group_id
     subnets      = join(",", var.task_subnets)
+    env_key      = var.env_key
   })
 }
 
@@ -262,6 +264,7 @@ module "api_deps" {
   aws_region   = var.aws_region
   vpc_id       = var.vpc_id
   cluster_name = var.cluster_name
+  env_key      = var.env_key
 
   task_subnets                = var.task_subnets
   instance_subnets            = var.instance_subnets

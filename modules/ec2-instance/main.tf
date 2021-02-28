@@ -56,6 +56,7 @@ resource "aws_instance" "desktop" {
     Username       = var.username
     MachineDef     = var.machinedefcode
     MachineType    = "Desktop"
+    EnvKey         = var.env_key
   }
 }
 

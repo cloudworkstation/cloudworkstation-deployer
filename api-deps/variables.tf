@@ -38,3 +38,9 @@ variable "instance_mgr_version" {
   type = string
   description = "What version of the instance manager is this module to use"
 }
+
+variable "env_key" {
+  type = string
+  description = "Key to identify the environment and desktops which belong to the environment, defaults to 'prod'"
+  default = "prod"
+}

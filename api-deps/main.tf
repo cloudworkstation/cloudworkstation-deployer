@@ -85,6 +85,10 @@ locals {
       {
         name  = "B64_USER_DATA"
         value = "TBC"
+      },
+      {
+        name  = "ENV_KEY",
+        value = var.env_key
       }
     ]
 

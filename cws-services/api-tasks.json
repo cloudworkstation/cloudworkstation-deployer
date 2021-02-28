@@ -30,7 +30,9 @@
       { "name": "SECURITY_GROUP",
         "value": "${sec_group}" },
       { "name": "SUBNETS",
-        "value": "${subnets}" }
+        "value": "${subnets}" },
+      { "name": "ENV_KEY",
+        "value": "${env_key}" }
     ]
   }
 ]

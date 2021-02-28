@@ -34,7 +34,9 @@
       { "name": "PORT",
         "value": "443" },
       { "name": "SCHEME",
-        "value": "https" }
+        "value": "https" },
+      { "name": "OIDC_REMOTE_USER",
+        "value": "${oidc_ru}"}
     ],
     "secrets": [
       { "name": "OIDC_CLIENT_SECRET",

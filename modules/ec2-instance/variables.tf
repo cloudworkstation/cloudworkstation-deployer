@@ -67,3 +67,8 @@ variable "additional_instance_role_policies" {
   description = "List of additional policies to attach to the IAM instance profile, optional."
   default = []
 }
+
+variable "env_key" {
+  type = string
+  description = "Key to identify the environment and desktops which belong to the environment"
+}

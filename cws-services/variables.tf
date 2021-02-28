@@ -114,3 +114,15 @@ variable "table_name" {
   description = "Name of the DyanamoDB table to create to store application data, defaults to 'desktops_data'"
   default = "desktops_data"
 }
+
+variable "oidc_remote_user_claim" {
+  type = string
+  description = "Name of claim to use as OIDC remote user value, defaults to 'email'"
+  default = "email"
+}
+
+variable "env_key" {
+  type = string
+  description = "Key to identify the environment and desktops which belong to the environment, defaults to 'prod'"
+  default = "prod"
+}

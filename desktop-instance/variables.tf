@@ -70,3 +70,9 @@ variable "user_data" {
   type = string
   description = "Script which sets up VNC desktop for connection from webapp"
 }
+
+variable "env_key" {
+  type = string
+  description = "Key to identify the environment and desktops which belong to the environment, defaults to 'prod'"
+  default = "prod"
+}

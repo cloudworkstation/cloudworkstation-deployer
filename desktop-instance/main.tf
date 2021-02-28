@@ -20,6 +20,8 @@ module "instance" {
   screen_geometry = var.screen_geometry
   username        = var.username
   machinedefcode  = var.machinedefcode
+  env_key         = var.env_key
+  
   security_groups = [
     module.allow_vnc.group_id
   ]

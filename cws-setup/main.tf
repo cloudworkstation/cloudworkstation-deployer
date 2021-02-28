@@ -24,6 +24,7 @@ module "services" {
   cluster_name     = var.cluster_name
   namespace_suffix = var.namespace_suffix
   table_name       = var.table_name
+  env_key          = var.env_key
 
   number_of_oidc_instances   = var.number_of_oidc_instances
   number_of_router_instances = var.number_of_router_instances
@@ -45,5 +46,6 @@ module "services" {
   oidc_client_id                   = var.oidc_client_id
   oidc_client_secret_ssm_name      = var.oidc_client_secret_ssm_name
   oidc_crypto_passphrase_ssm_name  = var.oidc_crypto_passphrase_ssm_name
+  oidc_remote_user_claim           = var.oidc_remote_user_claim
 
 }
