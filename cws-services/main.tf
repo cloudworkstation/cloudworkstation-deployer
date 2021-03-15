@@ -209,6 +209,17 @@ data "aws_iam_policy_document" "api_policy" {
       "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/${var.table_name}"
     ]
   }
+
+  statement {
+    sid    = "4"
+    effect = "Allow"
+
+    actions = [
+      "iam:PassRole"
+    ]
+
+    resources = [ "*" ]
+  }
 }
 
 resource "aws_iam_policy" "api_policy" {
