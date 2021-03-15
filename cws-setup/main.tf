@@ -47,6 +47,6 @@ module "services" {
   oidc_crypto_passphrase_ssm_name  = var.oidc_crypto_passphrase_ssm_name
   oidc_remote_user_claim           = var.oidc_remote_user_claim
 
-  depends_on = [ modules.infra ]
+  depends_on = [ module.infra ]
     
 }
