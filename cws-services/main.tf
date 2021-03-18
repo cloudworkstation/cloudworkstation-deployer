@@ -8,7 +8,7 @@ locals {
     },
     {
       name   = "console_route"
-      number = "5"
+      number = var.number_of_console_instances
       path   = "console"
       dns    = "_console._tcp.services.${var.namespace_suffix}"
     },
@@ -59,7 +59,8 @@ module "oidc" {
 
   security_groups = [
     module.allow_p80.group_id,
-    module.allow_p5000.group_id
+    module.allow_p5000.group_id,
+    module.allow_p80.group_id
   ]  
 
   tasks_def = templatefile("${path.module}/oidc-tasks.json", {
@@ -91,6 +92,14 @@ module "allow_p5000" {
   aws_region = var.aws_region
   vpc_id     = var.vpc_id
   port_num   = 5000
+}
+
+module "allow_p80" {
+  source = "../modules/reflexive-sec-group"
+
+  aws_region = var.aws_region
+  vpc_id     = var.vpc_id
+  port_num   = 80
 }
 
 data "aws_iam_policy_document" "cloudmap_policy" {
@@ -282,4 +291,38 @@ module "api_deps" {
   desktops_registry_namespace = var.desktops_registry_namespace
   security_group_id           = module.allow_p8080.group_id
   instance_mgr_version        = var.instance_mgr_version
+}
+
+module "console" {
+  source = "../modules/ecs-service"
+
+  aws_region   = var.aws_region
+  vpc_id       = var.vpc_id
+  cluster_name = var.cluster_name
+  service_name = "${var.cluster_name}-console"
+  cpu          = 256
+  memory       = 256
+
+  use_spot_capacity = var.use_spot_capacity
+
+  task_name           = "console"
+  number_of_instances = var.number_of_console_instances
+
+  attach_to_alb                 = false
+  container_to_expose           = "console"
+  container_port_to_expose      = 80
+  service_registry_id           = var.services_registry_namespace
+  service_registry_service_name = "console"
+
+  task_subnets = var.task_subnets
+
+  security_groups = [
+    module.allow_p80.group_id
+  ]
+
+  tasks_def = templatefile("${path.module}/console-tasks.json", {
+    region       = var.aws_region
+    cluster      = var.cluster_name
+    service      = "${var.cluster_name}-console"
+  })
 }
