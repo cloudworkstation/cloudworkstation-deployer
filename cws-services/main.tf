@@ -59,8 +59,7 @@ module "oidc" {
 
   security_groups = [
     module.allow_p80.group_id,
-    module.allow_p5000.group_id,
-    module.allow_p80.group_id
+    module.allow_p5000.group_id
   ]  
 
   tasks_def = templatefile("${path.module}/oidc-tasks.json", {
@@ -92,14 +91,6 @@ module "allow_p5000" {
   aws_region = var.aws_region
   vpc_id     = var.vpc_id
   port_num   = 5000
-}
-
-module "allow_p80" {
-  source = "../modules/reflexive-sec-group"
-
-  aws_region = var.aws_region
-  vpc_id     = var.vpc_id
-  port_num   = 80
 }
 
 data "aws_iam_policy_document" "cloudmap_policy" {
