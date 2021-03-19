@@ -133,3 +133,15 @@ variable "env_key" {
   description = "Key to identify the environment and desktops which belong to the environment, defaults to 'prod'"
   default = "prod"
 }
+
+variable "tf_state_access_log_bucket" {
+  type = string
+  description = "Name of the bucket to put access logs in, if blank access logging is disabled"
+  default = ""
+}
+
+variable "tf_state_access_log_prefix" {
+  type = string
+  description = "Prefix for access logging if enabled"
+  default = ""
+}

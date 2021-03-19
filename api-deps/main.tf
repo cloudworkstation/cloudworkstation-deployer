@@ -109,6 +109,9 @@ module "state_bucket" {
   source = "../modules/s3-bucket"
 
   bucket_prefix = "desktop-state"
+
+  access_log_bucket = var.tf_state_access_log_bucket
+  access_log_prefix = var.tf_state_access_log_prefix
 }
 
 resource "aws_ecs_task_definition" "task" {

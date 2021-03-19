@@ -282,6 +282,9 @@ module "api_deps" {
   desktops_registry_namespace = var.desktops_registry_namespace
   security_group_id           = module.allow_p8080.group_id
   instance_mgr_version        = var.instance_mgr_version
+
+  tf_state_access_log_bucket  = var.tf_state_access_log_bucket
+  tf_state_access_log_prefix  = var.tf_state_access_log_prefix
 }
 
 module "console" {
