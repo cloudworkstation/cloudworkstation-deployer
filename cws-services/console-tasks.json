@@ -3,7 +3,7 @@
     "name": "console",
     "image": "cloudworkstation/console:latest",
     "cpu": 256,
-    "memory": 256,
+    "memory": 512,
     "essential": true,
     "portMappings": [
       {

@@ -295,7 +295,7 @@ module "console" {
   cluster_name = var.cluster_name
   service_name = "${var.cluster_name}-console"
   cpu          = 256
-  memory       = 256
+  memory       = 512
 
   use_spot_capacity = var.use_spot_capacity
 
