@@ -47,6 +47,9 @@ module "services" {
   oidc_crypto_passphrase_ssm_name  = var.oidc_crypto_passphrase_ssm_name
   oidc_remote_user_claim           = var.oidc_remote_user_claim
 
+  tf_state_access_log_bucket = var.tf_state_access_log_bucket
+  tf_state_access_log_prefix = var.tf_state_access_log_prefix
+
   depends_on = [ module.infra ]
     
 }
