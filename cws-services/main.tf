@@ -220,6 +220,46 @@ data "aws_iam_policy_document" "api_policy" {
 
     resources = [ "*" ]
   }
+
+  statement {
+    sid    = "5"
+    effect = "Allow"
+
+    actions = [
+      "sqs:CreateQueue",
+      "sqs:DeleteQueue",
+      "sqs:ReceiveMessage",
+      "sqs:GetQueueAttributes",
+      "sqs:SetQueueAttributes",
+      "sqs:DeleteMessage"
+    ]
+
+    resources = [ "*" ]
+  }
+
+  statement {
+    sid    = "6"
+    effect = "Allow"
+
+    actions = [
+      "sns:Subscribe",
+      "sns:Unsubscribe"
+    ]
+
+    resources = [ "*" ]
+  }
+
+  statement {
+    sid    = "7"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey*"
+    ]
+
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_policy" "api_policy" {
@@ -266,6 +306,8 @@ module "api" {
     sec_group    = module.api_deps.security_group_id
     subnets      = join(",", var.task_subnets)
     env_key      = var.env_key
+    sns_topic    = module.api_deps.ec2_state_sns
+    kms_key_id   = module.api_deps.kms_key_id
   })
 }
 

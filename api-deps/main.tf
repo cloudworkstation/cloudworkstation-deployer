@@ -279,3 +279,100 @@ resource "aws_iam_role_policy_attachment" "task_role_policy_attach" {
   role       = aws_iam_role.task_role.name
   policy_arn = aws_iam_policy.instance_manager_policy.arn
 }
+
+data "aws_iam_policy_document" "kms_key" {
+  statement {
+    sid = "AllowAccountAccess"
+    effect = "Allow"
+    actions = [
+      "kms:*"
+    ]
+    resources = [
+      "*"
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    } 
+  }
+  
+  statement {
+    sid = "SNSallowedtousekey"
+    effect = "Allow"
+    principals {
+      type = "Service"
+      identifiers = ["sns.amazonaws.com"]
+    }
+    actions = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey*"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    sid = "Eventbridgeallowedtousekey"
+    effect = "Allow"
+    principals {
+      type = "Service"
+      identifiers = ["events.amazonaws.com", "cloudwatch.amazonaws.com"]
+    }
+    actions = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey*"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
+
+resource "aws_kms_key" "kms_key" {
+  description = "key used by cws for sns/sqs"
+  policy      = data.aws_iam_policy_document.kms_key.json
+}
+
+resource "aws_sns_topic" "ec2_state_change_sns" {
+  name_prefix       = "desktops-ec2-sns"
+  kms_master_key_id = aws_kms_key.kms_key.id
+}
+
+resource "aws_cloudwatch_event_rule" "ec2_state_change_event_rule" {
+  name_prefix = "desktops-ec2"
+
+  event_pattern = <<EOF
+{
+  "detail-type": [
+    "EC2 Instance State-change Notification"
+  ],
+  "source": ["aws.ec2"]
+}
+EOF
+}
+
+resource "aws_cloudwatch_event_target" "ec2_sns" {
+  rule      = aws_cloudwatch_event_rule.ec2_state_change_event_rule.name
+  target_id = "SendToSNS"
+  arn       = aws_sns_topic.ec2_state_change_sns.arn
+}
+
+resource "aws_sns_topic_policy" "ec2_topic_policy" {
+  arn    = aws_sns_topic.ec2_state_change_sns.arn
+  policy = data.aws_iam_policy_document.ec2_sns_topic_policy.json
+}
+
+data "aws_iam_policy_document" "ec2_sns_topic_policy" {
+  statement {
+    effect  = "Allow"
+    actions = ["SNS:Publish"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+
+    resources = [aws_sns_topic.ec2_state_change_sns.arn]
+  }
+}

@@ -32,7 +32,11 @@
       { "name": "SUBNETS",
         "value": "${subnets}" },
       { "name": "ENV_KEY",
-        "value": "${env_key}" }
+        "value": "${env_key}" },
+      { "name": "EC2_SNS_TOPIC",
+        "value": "${sns_topic}" },
+      { "name": "KMS_KEY_ID",
+        "value": "${kms_key_id}" }
     ]
   }
 ]
