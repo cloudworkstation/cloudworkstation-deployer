@@ -25,9 +25,10 @@ module "services" {
   table_name       = var.table_name
   env_key          = var.env_key
 
-  number_of_oidc_instances   = var.number_of_oidc_instances
-  number_of_router_instances = var.number_of_router_instances
-  number_of_api_instances    = var.number_of_api_instances
+  number_of_oidc_instances    = var.number_of_oidc_instances
+  number_of_router_instances  = var.number_of_router_instances
+  number_of_api_instances     = var.number_of_api_instances
+  number_of_console_instances = var.number_of_console_instances
 
   use_spot_capacity = var.use_spot_capacity
 

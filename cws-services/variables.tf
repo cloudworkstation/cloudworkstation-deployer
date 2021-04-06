@@ -44,7 +44,6 @@ variable "number_of_console_instances" {
   default = 2
 }
 
-
 variable "use_spot_capacity" {
   type = bool
   description = "Should spot capacity be used to create Fargate tasks.  Defaults to 'false'"
