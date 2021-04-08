@@ -28,7 +28,9 @@
       { "name": "PASSWORD",
         "value": "${vnc_password}" },
       { "name": "GUACD_HOST",
-        "value": "localhost" }
+        "value": "localhost" },
+      { "name": "REMOTE_USER",
+        "value": "${remote_user}" }
     ]
   },
   {

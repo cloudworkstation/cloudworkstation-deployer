@@ -118,3 +118,9 @@ variable "use_spot_capacity" {
   description = "Should spot capacity be used to create Fargate tasks.  Defaults to 'false'"
   default = false
 }
+
+variable "service_tags" {
+  type = map(string)
+  description = "List of tags to put on the service"
+  default = {}
+}

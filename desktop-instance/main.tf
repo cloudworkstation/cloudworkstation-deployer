@@ -63,5 +63,12 @@ module "webapp" {
     service         = "desktop-proxy-${var.desktop_id}"
     desktop_host    = module.instance.instance_priv_dns
     vnc_password    = module.instance.vnc_password
+    remote_user     = var.username
   })
+
+  service_tags = {
+    User      = var.username
+    DesktopId = var.desktop_id
+    EnvKey    = var.env_key
+  }
 }

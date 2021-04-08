@@ -192,6 +192,7 @@ resource "aws_ecs_service" "service" {
   cluster           = data.aws_ecs_cluster.cluster.id
   task_definition   = aws_ecs_task_definition.task.arn
   desired_count     = var.number_of_instances
+  tags              = var.service_tags
 
   service_registries {
     registry_arn    = aws_service_discovery_service.discovery.arn
